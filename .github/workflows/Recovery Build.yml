@@ -141,6 +141,8 @@ jobs:
         sed -i 's/\.iteritems()/\.items()/g' build/tools/post_process_props.py
         mkdir -p bin
         ln -sf $(which java) bin/java
+        echo "$(pwd)/out/host/linux-x86/bin" >> $GITHUB_PATH
+        echo "$(pwd)/bin" >> $GITHUB_PATH
       working-directory: workspace
 
     - name: Clone device tree (TeamWin)
