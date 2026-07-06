@@ -215,12 +215,11 @@ jobs:
       id: recoveryinstaller
       continue-on-error: true
 
-    - name: Install Python 2
+    - name: Link Python to Python3
       if: ${{ steps.buildtree.outputs.value == 'omni' }}
       run: |
-        sudo apt -y install python2
         cd /usr/bin
-        sudo ln -sf python2 python
+        sudo ln -sf python3 python
 
     - name: Building recovery (AOSP)
       if: ${{ steps.buildtree.outputs.value == 'aosp' }} 
