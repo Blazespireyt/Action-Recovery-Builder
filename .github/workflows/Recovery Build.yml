@@ -78,12 +78,18 @@ jobs:
       with:
         swap-size-gb: 24
 
+    - name: Link Python to Python3 Global Fix
+      run: |
+        sudo ln -sf /usr/bin/python3 /usr/bin/python
+
     - name: Prepare the environment
       run: |
         sudo apt update
         sudo apt -y upgrade
-        sudo apt -y install gperf gcc-multilib g++-multilib libc6-dev x11proto-core-dev libx11-dev tree lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc bc ccache lib32readline-dev liblz4-tool libncurses5-dev libsdl1.2-dev libxml2 lzop pngcrush schedtool squashfs-tools imagemagick libbz2-dev lzma ncftp qemu-user-static libncurses6 libtinfo6
+        sudo apt -y install gperf gcc-multilib g++-multilib libc6-dev x11proto-core-dev libx11-dev tree lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc bc ccache lib32readline-dev liblz4-tool libncurses5-dev libsdl1.2-dev libxml2 lzop pngcrush schedtool squashfs-tools imagemagick libbz2-dev lzma ncftp qemu-user-static libncurses-dev libtinfo6
         sudo add-apt-repository universe
+        sudo ln -sf /usr/lib/x86_64-linux-gnu/libncurses.so.6 /usr/lib/x86_64-linux-gnu/libncurses.so.5
+        sudo ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 /usr/lib/x86_64-linux-gnu/libtinfo.so.5
 
     - name: Check Build Tree
       uses: haya14busa/action-cond@v1.2.1
@@ -214,12 +220,6 @@ jobs:
       working-directory: workspace
       id: recoveryinstaller
       continue-on-error: true
-
-    - name: Link Python to Python3
-      if: ${{ steps.buildtree.outputs.value == 'omni' }}
-      run: |
-        cd /usr/bin
-        sudo ln -sf python3 python
 
     - name: Building recovery (AOSP)
       if: ${{ steps.buildtree.outputs.value == 'aosp' }} 
