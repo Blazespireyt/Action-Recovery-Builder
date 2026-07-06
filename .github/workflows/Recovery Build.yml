@@ -138,6 +138,9 @@ jobs:
         chmod a+x build/tools/check_radio_versions.py
         echo -e '#!/usr/bin/python3\nimport sys, os\nfor p in sys.argv[1:]:\n    print(os.path.normpath(p))' > build/tools/normalize_path.py
         chmod a+x build/tools/normalize_path.py
+        sed -i 's/\.iteritems()/\.items()/g' build/tools/post_process_props.py
+        mkdir -p bin
+        ln -sf $(which java) bin/java
       working-directory: workspace
 
     - name: Clone device tree (TeamWin)
