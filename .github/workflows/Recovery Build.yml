@@ -132,6 +132,12 @@ jobs:
         cp -f ${GITHUB_WORKSPACE}/templates/*.xml .repo/local_manifests/
       working-directory: workspace
 
+    - name: Patch Legacy Python Scripts for Python 3
+      run: |
+        sed -i 's/print "\([^"]*\)" % \(([^)]*)\|[^ ]*\)/print("\1" % \2)/g' build/tools/check_radio_versions.py
+        sed -i 's/print \([^ ]*\)/print(\1)/g' build/tools/normalize_path.py
+      working-directory: workspace
+
     - name: Clone device tree (TeamWin)
       if: |
         contains( inputs.DEVICE_TREE_URL,'/TeamWin/' )
