@@ -134,15 +134,24 @@ jobs:
 
     - name: Patch Legacy Python Scripts for Python 3
       run: |
+        # Wipe out check_radio_versions.py and make it a dummy script that succeeds
         echo -e '#!/usr/bin/python3\nimport sys\nsys.exit(0)' > build/tools/check_radio_versions.py
         chmod a+x build/tools/check_radio_versions.py
+        
+        # Wipe out normalize_path.py and make it handle paths with Python 3 syntax
         echo -e '#!/usr/bin/python3\nimport sys, os\nfor p in sys.argv[1:]:\n    print(os.path.normpath(p))' > build/tools/normalize_path.py
         chmod a+x build/tools/normalize_path.py
+
+        # Fix the Python 3 .iteritems() crash in property processing
         sed -i 's/\.iteritems()/\.items()/g' build/tools/post_process_props.py
-        mkdir -p bin
-        ln -sf $(which java) bin/java
+
+        # Force structural tracking paths into $GITHUB_PATH 
         echo "$(pwd)/out/host/linux-x86/bin" >> $GITHUB_PATH
-        echo "$(pwd)/bin" >> $GITHUB_PATH
+        
+        # Explicitly hook the exact Java 8 binary environment path so dumpkey.jar executes flawlessly
+        if [ -n "$JAVA_HOME" ]; then
+          echo "$JAVA_HOME/bin" >> $GITHUB_PATH
+        fi
       working-directory: workspace
 
     - name: Clone device tree (TeamWin)
